@@ -1,0 +1,65 @@
+{
+  "name": "@idem0/sdk",
+  "version": "0.1.1",
+  "description": "Drop-in idempotency for @anthropic-ai/sdk and openai via the idem0 proxy — a config producer, not a client.",
+  "license": "MIT",
+  "author": "Financial LLM <financialllm@financialllm.com>",
+  "homepage": "https://idem0.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/F-LLM/idem0-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/F-LLM/idem0-sdk/issues"
+  },
+  "keywords": [
+    "idempotency",
+    "idempotent",
+    "exactly-once",
+    "llm",
+    "anthropic",
+    "claude",
+    "openai",
+    "proxy",
+    "byok",
+    "retry"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "sideEffects": false,
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "import": { "types": "./dist/index.d.mts", "default": "./dist/index.mjs" },
+      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.110.0",
+    "@arethetypeswrong/core": "^0.18.4",
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-istanbul": "^4.1.0",
+    "openai": "^6.45.0",
+    "publint": "^0.3.21",
+    "tsdown": "^0.22.3",
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.0"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "check:pkg": "tsdown --publint --attw",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "npm run build"
+  }
+}

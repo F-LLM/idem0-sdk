@@ -1,0 +1,21 @@
+{
+  // Standalone tsconfig — the extracted SDK no longer extends the monorepo's
+  // tsconfig.base.json; those options are inlined below so this repo is self-contained.
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "declaration": true,
+    "isolatedDeclarations": true,
+    "types": ["node"]
+  },
+  "include": ["src", "test"]
+}
