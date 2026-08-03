@@ -38,7 +38,7 @@ describe("integration — inject idem0 config into the REAL provider SDKs (US1 +
       type: "message",
       role: "assistant",
       content: [],
-      model: "claude-opus-4-8",
+      model: "claude-haiku-4-5",
       stop_reason: "end_turn",
       stop_sequence: null,
       usage: { input_tokens: 1, output_tokens: 1 },
@@ -50,7 +50,7 @@ describe("integration — inject idem0 config into the REAL provider SDKs (US1 +
     });
 
     await client.messages.create(
-      { model: "claude-opus-4-8", max_tokens: 16, messages: [{ role: "user", content: "ping" }] },
+      { model: "claude-haiku-4-5", max_tokens: 16, messages: [{ role: "user", content: "ping" }] },
       { headers: idempotencyKey("job-42") },
     );
 
@@ -68,7 +68,7 @@ describe("integration — inject idem0 config into the REAL provider SDKs (US1 +
       id: "cmpl_1",
       object: "chat.completion",
       created: 0,
-      model: "gpt-4o-mini",
+      model: "gpt-5-nano",
       choices: [],
     });
     const client = new OpenAI({
@@ -78,7 +78,7 @@ describe("integration — inject idem0 config into the REAL provider SDKs (US1 +
     });
 
     await client.chat.completions.create(
-      { model: "gpt-4o-mini", messages: [{ role: "user", content: "ping" }] },
+      { model: "gpt-5-nano", messages: [{ role: "user", content: "ping" }] },
       { headers: idempotencyKey("job-42") },
     );
 

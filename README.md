@@ -26,7 +26,7 @@ const client = new Anthropic({
 });
 
 const message = await client.messages.create(
-  { model: "claude-opus-4-8", max_tokens: 1024, messages: [{ role: "user", content: "Hello" }] },
+  { model: "claude-haiku-4-5", max_tokens: 1024, messages: [{ role: "user", content: "Hello" }] },
   { headers: idempotencyKey("job-42") }, // stable, caller-owned key → exactly-once
 );
 ```
@@ -43,7 +43,7 @@ const client = new OpenAI({
 });
 
 const completion = await client.chat.completions.create(
-  { model: "gpt-4o-mini", messages: [{ role: "user", content: "Hello" }] },
+  { model: "gpt-5-nano", messages: [{ role: "user", content: "Hello" }] },
   { headers: idempotencyKey("job-42") },
 );
 ```
