@@ -19,4 +19,19 @@ describe("public surface (US4) — config producer, not a client", () => {
     const bad: sdk.Idem0Options = { endpoint: "https://h", idem0Key: "k", provider: "anthropic", apiKey: "sk-x" };
     void bad;
   });
+
+  it("defaultHeaders is open to extra headers but still requires x-idem0-key (compile-time guard)", () => {
+    // Extra client-level headers must type-check — this is what keeps adding one
+    // (x-idem0-version, a tenant selector, …) a MINOR release after 1.0.0.
+    const widened: sdk.Idem0ClientConfig["defaultHeaders"] = {
+      "x-idem0-key": "k",
+      "x-idem0-version": "1",
+    };
+    expect(widened["x-idem0-version"]).toBe("1");
+
+    // …but the guarantee is not lost: omitting x-idem0-key MUST fail to compile.
+    // @ts-expect-error — `x-idem0-key` is required.
+    const missing: sdk.Idem0ClientConfig["defaultHeaders"] = { "x-idem0-version": "1" };
+    void missing;
+  });
 });

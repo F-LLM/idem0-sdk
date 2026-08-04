@@ -1,6 +1,6 @@
 {
   "name": "@idem0/sdk",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Drop-in idempotency for @anthropic-ai/sdk and openai via the idem0 proxy — a config producer, not a client.",
   "license": "MIT",
   "author": "Financial LLM <financialllm@financialllm.com>",
