@@ -56,7 +56,12 @@ The entire surface is two pure functions.
 
 ### `idem0({ idem0Key, provider, endpoint? })`
 
-Client-level config to spread **once** into the provider SDK constructor. Returns `{ baseURL, defaultHeaders }`.
+Client-level config to spread **once** into the provider SDK constructor. Returns `{ baseURL, defaultHeaders }`:
+
+- `baseURL` — the provider-aware proxy route (`<endpoint>/anthropic`, or `<endpoint>/openai/v1`).
+- `defaultHeaders` — always contains `x-idem0-key`, set to your `idem0Key` verbatim. The map is
+  deliberately **open**: a future release may add other client-level headers to it without a breaking
+  change, so read `defaultHeaders["x-idem0-key"]` rather than asserting on the exact key set.
 
 | Option     | Required | Description                                                                                          |
 | ---------- | -------- | ---------------------------------------------------------------------------------------------------- |
@@ -79,6 +84,20 @@ Running your own idem0 proxy? Pass `endpoint` — a bare host, no path and no `/
 ```ts
 idem0({ endpoint: "https://idem0.internal.acme.com", idem0Key: "…", provider: "anthropic" });
 ```
+
+## Errors
+
+Invalid input throws synchronously — a malformed or non-http(s) `endpoint`, an empty `idem0Key`, an
+unknown `provider`, an empty idempotency key. A bad *explicit* `endpoint` is never quietly replaced by
+the default, so a self-hosting typo fails loudly instead of misrouting your traffic to the hosted
+proxy. Thrown values satisfy `instanceof TypeError`; the message strings are for humans and are not
+part of the stable contract.
+
+## Versioning
+
+Semantic versioning, with the 1.0.0 stability commitments written down in
+[VERSIONING.md](./VERSIONING.md) — what is frozen until 2.0.0, what arrives additively in a minor, and
+how errors are covered. Changes are tracked in [CHANGELOG.md](./CHANGELOG.md).
 
 ---
 

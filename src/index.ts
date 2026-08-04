@@ -30,8 +30,20 @@ export interface Idem0Options {
 export interface Idem0ClientConfig {
   /** `<endpoint>/anthropic` or `<endpoint>/openai/v1` — spread into the provider SDK constructor's `baseURL`. */
   baseURL: string;
-  /** Spread into the provider SDK constructor's `defaultHeaders`. */
-  defaultHeaders: { "x-idem0-key": string };
+  /**
+   * Spread into the provider SDK constructor's `defaultHeaders`.
+   *
+   * `x-idem0-key` is GUARANTEED present — that part of the contract is frozen.
+   * The open index signature is deliberate forward-compat room: adding a
+   * client-level header later (`x-idem0-version`, a tenant selector, …) stays a
+   * MINOR release instead of a breaking type change, and callers may merge their
+   * own headers in without a cast. Never carries the provider token — that stays
+   * in the caller's provider-SDK `apiKey` (BYOK).
+   */
+  defaultHeaders: {
+    "x-idem0-key": string;
+    [header: string]: string;
+  };
 }
 
 /**

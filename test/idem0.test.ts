@@ -10,7 +10,9 @@ describe("idem0() — Anthropic (US1) + general guards", () => {
     const cfg = idem0({ endpoint: ENDPOINT, idem0Key: KEY, provider: "anthropic" });
     expect(cfg.baseURL).toBe("https://proxy.example.com/anthropic");
     expect(cfg.baseURL).not.toContain("/v1"); // the Anthropic SDK appends /v1/messages itself
-    expect(cfg.defaultHeaders).toEqual({ "x-idem0-key": KEY });
+    // `x-idem0-key` must be PRESENT and verbatim — not necessarily alone (the
+    // header map is open by design, so a future client header stays non-breaking).
+    expect(cfg.defaultHeaders["x-idem0-key"]).toBe(KEY);
   });
 
   it("normalizes trailing slashes, including multiple (never //)", () => {
@@ -53,7 +55,13 @@ describe("idem0() — Anthropic (US1) + general guards", () => {
   it("is token-agnostic: the output exposes ONLY baseURL + defaultHeaders (no token field)", () => {
     const cfg = idem0({ endpoint: ENDPOINT, idem0Key: KEY, provider: "anthropic" });
     expect(Object.keys(cfg).sort()).toEqual(["baseURL", "defaultHeaders"]);
-    expect(Object.keys(cfg.defaultHeaders)).toEqual(["x-idem0-key"]);
+    // The header map is intentionally OPEN (forward-compat), so assert the
+    // invariant that actually matters: `x-idem0-key` is there, and NO header is
+    // token-shaped — rather than pinning the exact key list.
+    expect(cfg.defaultHeaders).toHaveProperty("x-idem0-key", KEY);
+    for (const name of Object.keys(cfg.defaultHeaders)) {
+      expect(name).not.toMatch(/^(authorization|x-api-key)$/i);
+    }
     // nothing token-shaped leaks into the config
     expect(JSON.stringify(cfg)).not.toMatch(/sk-|bearer|authorization|x-api-key/i);
   });
@@ -64,7 +72,7 @@ describe("idem0() — OpenAI (US2): the /v1 asymmetry", () => {
   it("returns baseURL <endpoint>/openai/v1 (WITH /v1 — the OpenAI SDK omits it)", () => {
     const cfg = idem0({ endpoint: ENDPOINT, idem0Key: KEY, provider: "openai" });
     expect(cfg.baseURL).toBe("https://proxy.example.com/openai/v1");
-    expect(cfg.defaultHeaders).toEqual({ "x-idem0-key": KEY });
+    expect(cfg.defaultHeaders["x-idem0-key"]).toBe(KEY);
   });
 
   it("normalizes trailing slashes for openai too", () => {
@@ -89,9 +97,10 @@ describe("idem0() — default endpoint (hosted proxy) when endpoint is omitted",
   });
 
   it("still carries the x-idem0-key header with the default endpoint", () => {
-    expect(idem0({ idem0Key: KEY, provider: "anthropic" }).defaultHeaders).toEqual({
-      "x-idem0-key": KEY,
-    });
+    expect(idem0({ idem0Key: KEY, provider: "anthropic" }).defaultHeaders).toHaveProperty(
+      "x-idem0-key",
+      KEY,
+    );
   });
 
   it("an explicit endpoint still overrides the default (self-host), and its guards still bite", () => {
